@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="#"><img alt="Download the APK" src="https://img.shields.io/badge/Download%20the%20APK-f5b97f?style=for-the-badge&logo=android&logoColor=2a1c0d&labelColor=f5b97f"></a>
+  <a href="https://github.com/LegitCoconut/BlueRemind/releases/download/v1/BlueRemind_v1.apk"><img alt="Download the APK" src="https://img.shields.io/badge/Download%20the%20APK-f5b97f?style=for-the-badge&logo=android&logoColor=2a1c0d&labelColor=f5b97f"></a>
   <a href="https://legitcoconut.github.io/blueremind/"><img alt="Project page" src="https://img.shields.io/badge/Project%20page-2b231d?style=for-the-badge&labelColor=2b231d"></a>
 </p>
 

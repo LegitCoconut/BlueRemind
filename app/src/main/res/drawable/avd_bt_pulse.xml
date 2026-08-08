@@ -1,0 +1,9 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_bt_animatable">
+    <target
+        android:name="pulse"
+        android:animation="@animator/pulse_scale" />
+    <target
+        android:name="glyph"
+        android:animation="@animator/pulse_fade" />
+</animated-vector>

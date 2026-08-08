@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BlueRemind</string>
+    <string name="subtitle">Pick the devices you don\'t want to leave behind</string>
+    <string name="no_bluetooth">This phone has no Bluetooth adapter.</string>
+    <string name="need_permission">Allow the Nearby devices permission to see your paired devices.</string>
+    <string name="bluetooth_off">Bluetooth is off. Turn it on to see your paired devices.</string>
+    <string name="no_paired_devices">No paired devices yet. Pair one in system settings and come back.</string>
+
+    <string name="edit_device">Edit device</string>
+    <string name="rename_device">Rename</string>
+    <string name="change_picture">Change picture</string>
+    <string name="reset_to_default">Reset name and picture</string>
+    <string name="device_name">Device name</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="picture_failed">Couldn\'t read that image.</string>
+
+    <string name="connected_now">Connected now</string>
+    <string name="paired_devices">Paired devices</string>
+    <string name="dur_just_now">just connected</string>
+    <string name="dur_minutes">%1$dm</string>
+    <string name="dur_hours">%1$dh %2$dm</string>
+    <string name="dur_days">%1$dd %2$dh</string>
+</resources>

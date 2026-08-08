@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BlueRemind: never leave a Bluetooth device behind</title>
+<meta name="description" content="A lightweight Android app that vibrates the moment a Bluetooth device you care about disconnects.">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+<style>
+  :root {
+    --bg: #17120e;
+    --card: #2b231d;
+    --line: #3c322a;
+    --text: #ede3da;
+    --muted: #b3a396;
+    --accent: #f5b97f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 64px 32px 96px;
+  }
+  header { margin-bottom: 56px; }
+  h1 {
+    font-size: clamp(2.4rem, 7vw, 3.4rem);
+    margin: 0 0 12px;
+    letter-spacing: -0.02em;
+  }
+  .tagline { font-size: 1.15rem; color: var(--muted); margin: 0; max-width: 60ch; }
+  h2 {
+    font-size: 1.35rem;
+    margin: 48px 0 16px;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+  }
+  p { margin: 0 0 16px; }
+  .muted { color: var(--muted); }
+  a {
+    color: var(--accent);
+    text-decoration-color: rgba(245, 185, 127, 0.4);
+    text-underline-offset: 3px;
+  }
+  a:hover { text-decoration-color: var(--accent); }
+
+  .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 22px;
+    border-radius: 100px;
+    border: 1px solid transparent;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .btn svg { width: 18px; height: 18px; fill: currentColor; flex: none; }
+  .btn-primary { background: var(--accent); color: #2a1c0d; }
+  .btn-primary:hover { background: #ffd0a0; }
+  .btn-ghost { border-color: var(--line); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Three shots on one line; stacks only when there is genuinely no room. */
+  .shots {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin: 0;
+  }
+  .shots figure {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    text-align: center;
+  }
+  .shots img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .shots figcaption {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  ol { padding-left: 20px; margin: 0; }
+  ol li { margin-bottom: 14px; }
+  code {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-size: 0.9em;
+  }
+  .note {
+    background: var(--card);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin-top: 28px;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  footer { text-align: center; }
+  footer p { margin: 0; }
+
+  /* Monochrome by default, accent on hover, so the row stays quiet. */
+  .stack { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+  .stack a {
+    flex: 1 1 0;
+    min-width: 160px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--muted);
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .stack a:hover { color: var(--accent); border-color: var(--accent); }
+  .stack svg { width: 27px; height: 27px; flex: none; fill: currentColor; }
+  .stack .label { display: flex; flex-direction: column; line-height: 1.35; }
+  .stack .label b { color: var(--text); font-size: 0.95rem; font-weight: 600; }
+  .stack a:hover .label b { color: var(--accent); }
+  .stack .label span { font-size: 0.78rem; }
+  .colophon { margin-top: 16px; font-size: 0.9rem; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 40px 20px 64px; }
+    .shots { flex-direction: column; align-items: center; }
+    .shots figure { max-width: 320px; width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>BlueRemind</h1>
+    <p class="tagline">Your phone buzzes the moment a watched Bluetooth device drops off.
+      Notice the watch, the earbuds or the laptop before you have walked away from it.</p>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M11 3h2v9.2l3.3-3.3 1.4 1.4L12 16 6.3 10.3l1.4-1.4L11 12.2z"/>
+          <path d="M5 18h14v2H5z"/>
+        </svg>
+        Download the APK
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/legitcoconut/blueremind">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.2 2.8.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/>
+        </svg>
+        View on GitHub
+      </a>
+    </div>
+  </header>
+
+  <div class="shots">
+    <figure>
+      <img src="home.png" alt="BlueRemind home screen showing connected devices and the paired device list">
+      <figcaption>Pick what to watch</figcaption>
+    </figure>
+    <figure>
+      <img src="connected.jpeg" alt="Notifications showing a watch and a laptop have connected">
+      <figcaption>Quiet notice on connect</figcaption>
+    </figure>
+    <figure>
+      <img src="disconnect.jpeg" alt="Alert notification showing a laptop has disconnected">
+      <figcaption>Buzzing alert on disconnect</figcaption>
+    </figure>
+  </div>
+
+  <h2>What it does</h2>
+  <p>Pick which of your paired devices to watch. A connect posts a quiet notification.
+    A disconnect, whether you walked out of range or the battery died, fires a high priority
+    alert with a vibration pattern you will feel through a pocket.</p>
+  <p>Watched devices that are connected sit in a grid at the top, each with a live uptime.
+    Give any device its own name and photo and both follow it into the notifications.</p>
+  <p class="muted">No account, no background service, no location access. It wakes on the
+    system's Bluetooth broadcasts and does nothing in between.</p>
+
+  <h2>Adding a device to the watch list</h2>
+  <ol>
+    <li><strong>Pair the device first.</strong> BlueRemind lists what Android has already
+      paired. It never scans.</li>
+    <li><strong>Grant both prompts on first launch.</strong> Nearby devices reads your paired
+      list and detects connections. Notifications lets the alert reach you.</li>
+    <li><strong>Flip the switch on its row</strong> under Paired devices. It jumps to the top.
+      That is the whole setup.</li>
+    <li><strong>Optional: tap <code>⋮</code> to rename it or change its picture.</strong>
+      Pictures are copied into the app's own storage, so clearing your gallery later changes
+      nothing. Reset restores the Bluetooth name and the default icon.</li>
+    <li><strong>Done.</strong> Connected devices appear under Connected now with their uptime.
+      Walk away and the alert fires.</li>
+  </ol>
+
+  <div class="note">
+    Xiaomi, Samsung and OnePlus ROMs kill background receivers aggressively. If alerts stop
+    arriving, exempt BlueRemind from battery optimisation in Android's app settings.
+  </div>
+
+  <h2>Built with</h2>
+  <div class="stack">
+    <a href="https://openjdk.org/">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M9.1 2.1c-1.7 1.6-2.1 2.8-.6 4.2 1.1 1 .9 1.9.2 3 2-1.3 2.5-2.7 1.1-4.1-1.3-1.2-1.1-2-.7-3.1z"/>
+        <path d="M13 2.7c-1 1-1.2 1.8-.4 2.6.7.7.6 1.3.1 2 1.4-.9 1.7-1.9.8-2.8-.8-.7-.8-1.3-.5-1.8z"/>
+        <path d="M5 10.4h11v4.1A3.9 3.9 0 0 1 12.1 18.4H8.9A3.9 3.9 0 0 1 5 14.5z"/>
+        <path d="M16.7 11.5h.8a2.6 2.6 0 0 1 0 5.2H17" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M4 20.7h13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span class="label"><b>Java</b><span>OpenJDK 17</span></span>
+    </a>
+    <a href="https://m3.material.io/">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M12 2.8A9.2 9.2 0 0 0 2.8 12H12z"/>
+      </svg>
+      <span class="label"><b>Material 3</b><span>Dynamic colour</span></span>
+    </a>
+    <a href="https://developer.android.com/">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7.1 3.2 8.7 5.7" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M16.9 3.2 15.3 5.7" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M4.6 14.2a7.4 7.4 0 0 1 14.8 0z"/>
+        <circle cx="9.2" cy="10.9" r="0.95" fill="var(--card)"/>
+        <circle cx="14.8" cy="10.9" r="0.95" fill="var(--card)"/>
+      </svg>
+      <span class="label"><b>Android</b><span>minSdk 26</span></span>
+    </a>
+  </div>
+  <p class="muted colophon">No third-party services.</p>
+
+  <footer>
+    <p><a href="https://github.com/legitcoconut/blueremind">Source on GitHub</a>
+      · built by <a href="https://github.com/legitcoconut/">LegitCoconut</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

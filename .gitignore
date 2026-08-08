@@ -1,0 +1,12 @@
+# Signing material. Losing these means never being able to update an installed app.
+# Back them up somewhere private, but never commit them.
+*.jks
+*.keystore
+keystore.properties
+
+# Local toolchain paths
+local.properties
+
+# Build output
+build/
+.gradle/

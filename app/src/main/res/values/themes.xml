@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- DayNight follows the system light/dark setting.
+         App.java layers the wallpaper palette on top on Android 12+. -->
+    <style name="Theme.BlueRemind" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+    </style>
+
+</resources>
